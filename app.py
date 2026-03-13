@@ -1,39 +1,47 @@
-from dotenv import load_dotenv
 import streamlit as st
+from langchain_core.prompts import PromptTemplate
 from langchain_huggingface import ChatHuggingFace,HuggingFaceEndpoint
+from dotenv import load_dotenv
+
 load_dotenv()
- 
 
 
-st.title("AI Text Summarizer")
+prompt = PromptTemplate(
+    input_variables=["topic"],
+    template='''You are a professional blogger.
+    Write a short blog about {topic}.
+    Structure Blog with:
+            -title
+            -introduction
+            - 5 main points(Short Explanation)
+            - conclusion
+            '''
+)
 
-text = st.text_area("Enter your text")
 
-if st.button("Summarize"):
-    if text:
-        llm = HuggingFaceEndpoint(repo_id = 'Qwen/Qwen3-Coder-Next',
+st.title("Blog Post or Article Generator")
+
+topic = st.text_input("Enter your topic")
+
+if st.button("Generate Blog"):
+    if topic:
+        llm = HuggingFaceEndpoint(repo_id='Qwen/Qwen3-Coder-Next',
                          temperature = 0,
-                         max_new_tokens=200,
+                          
+                         max_new_tokens=500,
                          )
         
         model = ChatHuggingFace(llm = llm)
         
-        prompt = f'''
-        You are a professional summarizer.
-        Summarize the following text:\n{text} by including paragraph or bullet points. 
-        Summary should be about 10 % of original text.''' 
-        with st.spinner("Generating summary..."):
-            response = model.invoke(prompt)
+        with st.spinner("Generating Blog..."):
+            response = model.invoke(prompt.format(topic = topic))
         
-            st.subheader('Summary')
+            st.subheader('Blog')
             st.write(response.content)
         
     else:
-        st.warning('Write Text to summarize')
+        st.warning('Please Enter a Topic')
     
-
-
-
 
 
 

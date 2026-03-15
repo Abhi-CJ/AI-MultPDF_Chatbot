@@ -1,6 +1,9 @@
 streamlit
 langchain
 langchain-community
-langchain-huggingface
-huggingface_hub
+langchain-openai
+langchain-text-splitters
+faiss-cpu
 python-dotenv
+sentence-transformers
+langchain-huggingface

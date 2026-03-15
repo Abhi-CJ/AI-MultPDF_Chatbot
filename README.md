@@ -1,158 +1,191 @@
-# 🤖 AI Blog Generator using LangChain and HuggingFace
+# AI PDF Chatbot (RAG) using LangChain, FAISS & HuggingFace
 
-An AI-powered web application that automatically generates structured blog posts from a user-provided topic.  
-The application uses **LangChain Prompt Templates**, **HuggingFace Large Language Models**, and **Streamlit** to create high-quality blog content in seconds.
+## Project Overview
 
----
+The **AI PDF Chatbot** is a Generative AI application that allows users to upload a PDF document and ask questions about its content. The system retrieves relevant information from the document and generates accurate answers using a Large Language Model (LLM).
 
-## 📌 Project Overview
-
-The **AI Blog Generator** allows users to input a topic and instantly generate a complete blog post including:
-
-- Title
-- Introduction
-- 5 Main Points (with short explanations)
-- Conclusion
-
-This project demonstrates how **Generative AI and Large Language Models (LLMs)** can be used to automate content creation workflows.
+This project implements a **Retrieval-Augmented Generation (RAG)** pipeline using LangChain, FAISS, and HuggingFace models with a Streamlit interface.
 
 ---
 
-## 🚀 Features
+## Features
 
-- Generate blog articles from any topic
-- Structured blog format
-- Uses **LangChain Prompt Templates**
-- Integrates **HuggingFace LLM API**
-- Interactive **Streamlit web interface**
-- Fast and simple content generation
+* Upload any PDF document
+* Automatically extract and process document content
+* Split large text into manageable chunks
+* Generate embeddings using HuggingFace models
+* Store embeddings in a FAISS vector database
+* Retrieve relevant document sections for user queries
+* Generate context-aware answers using an LLM
+* Simple and interactive Streamlit interface
+
+---
+
+## How It Works
+
+1. User uploads a PDF document
+2. The PDF is loaded using **PyPDFLoader**
+3. Text is split into smaller chunks
+4. Each chunk is converted into **vector embeddings**
+5. Embeddings are stored in **FAISS vector database**
+6. When a question is asked:
+
+   * The retriever finds the most relevant chunks
+   * The LLM uses those chunks as context
+   * The chatbot generates an answer
+
+---
+
+## Architecture
+
+PDF Upload
+↓
+Document Loader
+↓
+Text Splitter
+↓
+Embeddings (HuggingFace)
+↓
+FAISS Vector Store
+↓
+Retriever
+↓
+LLM Response
+
+This architecture is known as **Retrieval-Augmented Generation (RAG)**.
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Python**
-- **LangChain**
-- **HuggingFace Inference API**
-- **Streamlit**
-- **python-dotenv**
+* **Python**
+* **Streamlit**
+* **LangChain**
+* **FAISS Vector Database**
+* **HuggingFace Embeddings**
+* **HuggingFace LLM Endpoint**
+* **PyPDF**
+* **Dotenv**
 
 ---
 
-## 📂 Project Structure
-AI-Blog-Generator
+## Project Structure
+
+```
+GEN_AI/
 │
-├── app.py
-├── requirements.txt
-├── .env
-└── README.md
-
+├── app.py              # Main Streamlit application
+├── load_pdf.py         # PDF loading and vector database creation
+├── requirements.txt    # Project dependencies
+├── .env                # HuggingFace API token
+├── venv                # Virtual environment
+└── __pycache__         # Python cache files
+```
 
 ---
 
-## ⚙️ Installation
+## ⚙ Installation
 
-### 1️⃣ Clone the Repository
-git clone https://github.com/Abhi-CJ/ai-blog-generator-langchain.git
+### Clone the repository
 
+```bash
+git clone https://github.com/yourusername/ai-pdf-chatbot.git
+cd ai-pdf-chatbot
+```
 
-### 2️⃣ Navigate to the Project Folder
-cd ai-blog-generator-langchain
+---
 
+### Create virtual environment
 
-### 3️⃣ Create a Virtual Environment
+```bash
 python -m venv venv
+```
 
+Activate it:
 
-### 4️⃣ Activate Virtual Environment
+**Windows**
 
-Windows
+```bash
 venv\Scripts\activate
-
-
-Mac/Linux
-source venv/bin/activate
+```
 
 ---
 
-### 5️⃣ Install Dependencies
+### Install dependencies
+
+```bash
 pip install -r requirements.txt
-
+```
 
 ---
 
-## 🔑 Environment Variables
+### Add HuggingFace API Token
 
-Create a `.env` file in the project root folder and add:
+Create a `.env` file in the project root:
 
-HUGGINGFACEHUB_API_TOKEN=your_huggingface_api_token
+```
+HUGGINGFACEHUB_API_TOKEN=your_huggingface_token
+```
 
-
-You can get your API key from:
-
+You can generate a token from:
 https://huggingface.co/settings/tokens
 
 ---
 
-## ▶️ Running the Application
+## Run the Application
 
-Start the Streamlit app with:
+```bash
+streamlit run app.py
+```
 
-
-
-
-After running the command, the application will open in your browser.
-
----
-
-## 🧠 How It Works
-
-1. User enters a topic in the input field.
-2. LangChain **PromptTemplate** structures the request.
-3. The HuggingFace model generates blog content.
-4. Streamlit displays the generated blog post in the UI.
+The application will open in your browser.
 
 ---
 
-## 📝 Example
+## Example Usage
 
-### Input
+1. Upload a PDF file
+2. Ask questions like:
 
+   * "What topics are covered in this document?"
+   * "Summarize the key points"
+   * "Explain the main concepts"
 
-
-### Output
-
-- Blog Title  
-- Introduction  
-- 5 Key Points with Explanation  
-- Conclusion  
+The chatbot will answer based on the PDF content.
 
 ---
 
-## 📈 Future Improvements
+## Learning Outcomes
 
-Some potential improvements for this project:
+Through this project you will learn:
 
-- Add blog length customization
-- Add SEO keyword generation
-- Export blog to **PDF or Markdown**
-- Add multiple writing styles
-- Integrate advanced LLM models
+* Retrieval-Augmented Generation (RAG)
+* Document processing with LangChain
+* Vector databases (FAISS)
+* Embedding models
+* LLM integration
+* Building AI apps using Streamlit
 
 ---
 
-## 👨‍💻 Author
+## Future Improvements
+
+* Chat memory support
+* Multiple PDF support
+* Persistent vector database
+* Better UI with chat interface
+* Streaming responses
+
+---
+
+## Author
 
 **Abhishek Jain**
 
-Python Developer | Generative AI Enthusiast
+Aspiring **AI / Python Developer** focused on building practical Generative AI applications using LangChain and modern LLM frameworks.
 
 ---
 
-## ⭐ Support
+## If you found this project useful
 
-If you found this project useful, please consider giving the repository a **star ⭐ on GitHub**.
-
-
-
-
+Please consider giving the repository a **star ⭐ on GitHub**.

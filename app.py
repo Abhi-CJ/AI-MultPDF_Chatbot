@@ -1,51 +1,33 @@
-import streamlit as st
+from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
-from langchain_huggingface import ChatHuggingFace,HuggingFaceEndpoint
+from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+import streamlit as st
 from dotenv import load_dotenv
+from load_pdf import pdf
 
 load_dotenv()
 
+st.title('AI PDF CHATBOT')
+retriever = pdf()
 
-prompt = PromptTemplate(
-    input_variables=["topic"],
-    template='''You are a professional blogger.
-    Write a short blog about {topic}.
-    Structure Blog with:
-            -title
-            -introduction
-            - 5 main points(Short Explanation)
-            - conclusion
-            '''
-)
-
-
-st.title("Blog Post or Article Generator")
-
-topic = st.text_input("Enter your topic")
-
-if st.button("Generate Blog"):
-    if topic:
-        llm = HuggingFaceEndpoint(repo_id='Qwen/Qwen3-Coder-Next',
-                         temperature = 0,
-                          
-                         max_new_tokens=500,
-                         )
-        
-        model = ChatHuggingFace(llm = llm)
-        
-        with st.spinner("Generating Blog..."):
-            response = model.invoke(prompt.format(topic = topic))
-        
-            st.subheader('Blog')
-            st.write(response.content)
-        
-    else:
-        st.warning('Please Enter a Topic')
+question = st.text_input("Ask a question about the PDF")
+if question:
+        docs = retriever.invoke(question)
+        context = "\n".join([doc.page_content for doc in docs])
     
-
-
-
-
-
-
-
+        llm = HuggingFaceEndpoint(
+    repo_id="meta-llama/Llama-3.1-8B-Instruct",
+    max_new_tokens=400,
+    temperature=0.3
+)
+        model = ChatHuggingFace(llm =llm)
+        prompt = PromptTemplate(input_variables = ['context', 'question'],
+                            template = '''Answer the question using the provided context
+                            Context:{context}
+                            Questoin: {question}
+                            Ansswer: 
+                            '''
+                            )
+        final_prompt = prompt.format(question = question,context = context)
+        response = model.invoke(final_prompt)
+        st.write(response.content)

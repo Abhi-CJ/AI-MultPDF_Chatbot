@@ -208,12 +208,10 @@ Through this project you will learn:
 
 ## Future Improvements
 
-* Support for **multiple PDFs**
 * **Conversation memory**
 * **Persistent vector database**
 * **Source citations with page numbers**
 * **Streaming LLM responses**
-* Improved chat UI
 
 ---
 

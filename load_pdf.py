@@ -4,25 +4,49 @@ from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 import streamlit as st
 import tempfile
-def pdf():
-    
-    pdf = st.file_uploader('Upload PDF', type = 'pdf')
-    if pdf is not None:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-            tmp_file.write(pdf.read())
-            temp_path = tmp_file.name
-        
+
+
+def pdfs():
+
+    uploaded_pdfs = st.file_uploader(
+        "Upload PDFs",
+        type="pdf",
+        accept_multiple_files=True
+    )
+
+    if not uploaded_pdfs:
+        return None
+
+    all_documents = []
+
+    for pdf in uploaded_pdfs:
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_file.write(pdf.read())
+            temp_path = temp_file.name
 
         loader = PyPDFLoader(temp_path)
         documents = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size = 500,
-            chunk_overlap = 50
 
+        all_documents.extend(documents)
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,
+        chunk_overlap=50
     )
-        texts = text_splitter.split_documents(documents)
-   
-        embeddings = HuggingFaceEmbeddings()
-        vectorstore = FAISS.from_documents(texts, embeddings)
-        retriever = vectorstore.as_retriever(search_kwargs={"k":3})
-        return retriever
+
+    texts = text_splitter.split_documents(all_documents)
+
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+
+    vectorstore = FAISS.from_documents(texts, embeddings)
+
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 25})
+    st.write("### Uploaded Files")
+
+    for pdf in uploaded_pdfs:
+        st.write("📄", pdf.name)
+
+    return retriever
